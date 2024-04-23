@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 pub mod serialize;
 
+#[derive(Clone)]
 pub enum Value {
     Str(String),
     Int(i64),
@@ -25,6 +26,7 @@ impl Identifier {
     }
 }
 
+#[derive(Clone)]
 pub struct Entry {
     pub identifier: Identifier,
     pub value: Value,
