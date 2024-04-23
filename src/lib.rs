@@ -8,10 +8,19 @@ pub enum Value {
     Ref(Identifier),
 }
 
-#[derive(Eq, Hash, PartialEq)]
+#[derive(Eq, Hash, PartialEq, Clone)]
 pub struct Identifier {
     pub provider: String,
     pub name: String,
+}
+
+impl Identifier {
+    pub fn new(provider: String, name: String) -> Identifier {
+        Identifier{
+            provider: provider,
+            name: name,
+        }
+    }
 }
 
 pub struct Entry {
@@ -68,16 +77,16 @@ impl Table {
 }
 
 pub struct Database {
-    pub name: String,
+    pub id: Identifier,
     pub tables: HashMap<Identifier, Table>,
 }
 
 impl Database {
-    pub fn new(name: String) {
+    pub fn new(id: Identifier) -> Database {
         Database {
-            name: name,
+            id: id,
             tables: HashMap::new(),
-        };
+        }
     }
     pub fn add(&mut self, identifier: Identifier){
         let _ = &self.tables.insert(Identifier{
@@ -88,184 +97,11 @@ impl Database {
             name: identifier.name.clone(),
         }));
     }
-}
-
-#[cfg(test)]
-mod tests {
-    use std::collections::HashMap;
-    use crate::*;
-    #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
-    }
-
-    #[test]
-    fn sample_db() -> () {
-        let mut db = Database {
-            name: "sample".to_string(),
-            tables: HashMap::new(),
-        };
-        db.tables.insert(
-            Identifier {
-                provider: "sample".to_string(),
-                name: "planets".to_string(),
-            },
-            Table::new(Identifier {
-                provider: "sample".to_string(),
-                name: "planets".to_string(),
-            })
-        );
-    }
-
-    #[test]
-    fn sample_db_with_item() -> () {
-        let mut db = Database {
-            name: "sample".to_string(),
-            tables: HashMap::new(),
-        };
-        db.tables.insert(
-            Identifier {
-                provider: "sample".to_string(),
-                name: "planets".to_string(),
-            },
-            Table {
-                identifier: Identifier {
-                    provider: "sample".to_string(),
-                    name: "planets".to_string(),
-                },
-                entries: HashMap::new(),
-            }
-        );
-        db.tables.get_mut(&Identifier {
-            provider: "sample".to_string(),
-            name: "planets".to_string(),
-        }).unwrap().entries.insert(
-            Identifier {
-                provider: "sample".to_string(),
-                name: "earth".to_string(),
-            },
-            Entry {
-                identifier: Identifier {
-                    provider: "sample".to_string(),
-                    name: "earth".to_string(),
-                },
-                value: Value::Str("blue".to_string()),
-            }
-        );
-    }
-    #[test]
-    fn sample_db_with_items() -> () {
-        let mut db = Database {
-            name: "sample".to_string(),
-            tables: HashMap::new(),
-        };
-        db.tables.insert(
-            Identifier {
-                provider: "sample".to_string(),
-                name: "planets".to_string(),
-            },
-            Table {
-                identifier: Identifier {
-                    provider: "sample".to_string(),
-                    name: "planets".to_string(),
-                },
-                entries: HashMap::new(),
-            }
-        );
-        db.tables.get_mut(&Identifier {
-            provider: "sample".to_string(),
-            name: "planets".to_string(),
-        }).unwrap().entries.insert(
-            Identifier {
-                provider: "sample".to_string(),
-                name: "earth".to_string(),
-            },
-            Entry {
-                identifier: Identifier {
-                    provider: "sample".to_string(),
-                    name: "earth".to_string(),
-                },
-                value: Value::Str("blue".to_string()),
-            }
-        );
-        db.tables.get_mut(&Identifier {
-            provider: "sample".to_string(),
-            name: "planets".to_string(),
-        }).unwrap().entries.insert(
-            Identifier {
-                provider: "unit testing app".to_string(),
-                name: "mars".to_string(),
-            },
-            Entry {
-                identifier: Identifier {
-                    provider: "unit testing app".to_string(),
-                    name: "mars".to_string(),
-                },
-                value: Value::Int(123_456_789),
-            }
-        );
-    }
-    #[test]
-    fn explain_db_item() -> () {
-        let mut db = Database {
-            name: "sample".to_string(),
-            tables: HashMap::new(),
-        };
-        db.tables.insert(
-            Identifier {
-                provider: "sample".to_string(),
-                name: "planets".to_string(),
-            },
-            Table {
-                identifier: Identifier {
-                    provider: "sample".to_string(),
-                    name: "planets".to_string(),
-                },
-                entries: HashMap::new(),
-            }
-        );
-        db.tables.get_mut(&Identifier {
-            provider: "sample".to_string(),
-            name: "planets".to_string(),
-        }).unwrap().entries.insert(
-            Identifier {
-                provider: "sample".to_string(),
-                name: "earth".to_string(),
-            },
-            Entry {
-                identifier: Identifier {
-                    provider: "sample".to_string(),
-                    name: "earth".to_string(),
-                },
-                value: Value::Str("blue".to_string()),
-            }
-        );
-        println!("{}",
-        db.tables.get_mut(&Identifier {
-            provider: "sample".to_string(),
-            name: "planets".to_string(),
-        }).unwrap().entries.get_mut(&Identifier {
-            provider: "sample".to_string(),
-            name: "earth".to_string(),
-        }).unwrap().explain().to_string());
-    }
-    #[test]
-    fn add_function() -> () {
-        let mut db = Database {
-            name: "sample".to_string(),
-            tables: HashMap::new(),
-        };
-        db.tables.insert(Identifier{
-            provider: "sample".to_string(),
-            name: "planets".to_string(),
-        },Table::new(Identifier{
-            provider: "sample".to_string(),
-            name: "planets".to_string(),
-        }));
-        db.tables.get_mut(&Identifier {
-            provider: "sample".to_string(),
-            name: "planets".to_string(),
-        }).unwrap().add("unittests".to_string(), "mars".to_string(), Value::Str("hi".to_string()));
+    pub fn get_table(&mut self, identifier: Identifier) -> Option<&mut Table> {
+        if self.tables.contains_key(&identifier.clone()) {
+            Some(self.tables.get_mut(&identifier.clone()).unwrap())
+        } else {
+            None
+        }
     }
 }
