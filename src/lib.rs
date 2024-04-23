@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 pub mod serialize;
-pub mod load;
+pub mod loader;
 
 #[derive(Clone)]
 pub enum Value {
