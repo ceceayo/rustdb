@@ -1,4 +1,4 @@
-use rustdb::{Database, Identifier, Value};
+use ceayo_db::{Database, Identifier, Value};
 
 #[test]
 fn test() {
