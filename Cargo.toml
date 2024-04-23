@@ -2,6 +2,12 @@
 name = "ceayo_db"
 version = "0.1.0"
 edition = "2021"
+authors = ["ceayo"]
+description = "A small minecraft-like database. No persistance, rebuilding every time for allowing your program to be modded."
+repository = "https://github.com/ceceayo/rustdb"
+license = "GPL-3.0"
+keywords = ["database", "minecraft", "persistanceless"]
+categories = ["database", "data-structures"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
