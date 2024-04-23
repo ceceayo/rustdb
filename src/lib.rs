@@ -42,9 +42,52 @@ pub struct Table {
     pub entries: HashMap<Identifier, Entry>,
 }
 
+impl Table {
+    pub fn new(identifier: Identifier) -> Table {
+        Table {
+            identifier,
+            entries: HashMap::new(),
+        }
+    }
+
+    pub fn add(&mut self, provider: String, name: String, value: Value) -> () {
+        //assert_eq!(identifier, entry.identifier);
+        let _ = &self.entries.insert(Identifier{
+            provider: provider.clone(),
+            name: name.clone(),
+        }, Entry {
+            identifier: Identifier{
+                provider: provider,
+                name: name,
+            },
+            value: value,
+        });
+        return ();
+    }
+
+}
+
 pub struct Database {
     pub name: String,
     pub tables: HashMap<Identifier, Table>,
+}
+
+impl Database {
+    pub fn new(name: String) {
+        Database {
+            name: name,
+            tables: HashMap::new(),
+        };
+    }
+    pub fn add(&mut self, identifier: Identifier){
+        let _ = &self.tables.insert(Identifier{
+            provider: identifier.provider.clone(),
+            name: identifier.name.clone(),
+        }, Table::new(Identifier{
+            provider: identifier.provider.clone(),
+            name: identifier.name.clone(),
+        }));
+    }
 }
 
 #[cfg(test)]
@@ -68,13 +111,10 @@ mod tests {
                 provider: "sample".to_string(),
                 name: "planets".to_string(),
             },
-            Table {
-                identifier: Identifier {
-                    provider: "sample".to_string(),
-                    name: "planets".to_string(),
-                },
-                entries: HashMap::new(),
-            }
+            Table::new(Identifier {
+                provider: "sample".to_string(),
+                name: "planets".to_string(),
+            })
         );
     }
 
@@ -209,5 +249,23 @@ mod tests {
             provider: "sample".to_string(),
             name: "earth".to_string(),
         }).unwrap().explain().to_string());
+    }
+    #[test]
+    fn add_function() -> () {
+        let mut db = Database {
+            name: "sample".to_string(),
+            tables: HashMap::new(),
+        };
+        db.tables.insert(Identifier{
+            provider: "sample".to_string(),
+            name: "planets".to_string(),
+        },Table::new(Identifier{
+            provider: "sample".to_string(),
+            name: "planets".to_string(),
+        }));
+        db.tables.get_mut(&Identifier {
+            provider: "sample".to_string(),
+            name: "planets".to_string(),
+        }).unwrap().add("unittests".to_string(), "mars".to_string(), Value::Str("hi".to_string()));
     }
 }

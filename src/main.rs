@@ -1,51 +1,31 @@
 use std::collections::HashMap;
-use rustdb::{Database, Identifier, Table, Entry, Value};
+use rustdb::*;
 fn main() {
     println!("Hello, world! JESSE");
-    explain_db_item();
+    add_function();
 }
 
-
-fn explain_db_item() -> () {
+fn add_function() -> () {
     let mut db = Database {
         name: "sample".to_string(),
         tables: HashMap::new(),
     };
-    db.tables.insert(
-        Identifier {
-            provider: "sample".to_string(),
-            name: "planets".to_string(),
-        },
-        Table {
-            identifier: Identifier {
-                provider: "sample".to_string(),
-                name: "planets".to_string(),
-            },
-            entries: HashMap::new(),
-        }
-    );
+    db.tables.insert(Identifier{
+        provider: "sample".to_string(),
+        name: "planets".to_string(),
+    },Table::new(Identifier{
+        provider: "sample".to_string(),
+        name: "planets".to_string(),
+    }));
     db.tables.get_mut(&Identifier {
         provider: "sample".to_string(),
         name: "planets".to_string(),
-    }).unwrap().entries.insert(
-        Identifier {
-            provider: "sample".to_string(),
-            name: "earth".to_string(),
-        },
-        Entry {
-            identifier: Identifier {
-                provider: "sample".to_string(),
-                name: "earth".to_string(),
-            },
-            value: Value::Str("blue".to_string()),
-        }
-    );
-    println!("{}",
-    db.tables.get_mut(&Identifier {
+    }).unwrap().add("unittests".to_string(), "mars".to_string(), Value::Str("hi".to_string()));
+    println!("{}", db.tables.get_mut(&Identifier {
         provider: "sample".to_string(),
         name: "planets".to_string(),
-    }).unwrap().entries.get_mut(&Identifier {
-        provider: "sample".to_string(),
-        name: "earth".to_string(),
+    }).unwrap().entries.get_mut(&Identifier{
+        provider: "unittests".to_string(),
+        name: "mars".to_string(),
     }).unwrap().explain().to_string());
 }
