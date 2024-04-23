@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+pub mod serialize;
+
 pub enum Value {
     Str(String),
     Int(i64),
