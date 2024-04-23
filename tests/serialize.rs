@@ -6,7 +6,7 @@ fn test_serialize_entry_with_string() {
     assert_eq!(serialize_entry(Entry {
         identifier: Identifier::new("sample".to_string(), "test".to_string()),
         value: Value::Str("aaa".to_string()),
-    }), "(sample:test): Str \"aaa\"");
+    }), "(sample:test): Str \"YWFh\"");
 }
 
 #[test]
@@ -14,7 +14,7 @@ fn test_serialize_entry_with_all_types() {
     assert_eq!(serialize_entry(Entry {
         identifier: Identifier::new("sample".to_string(), "test".to_string()),
         value: Value::Str("aaa".to_string()),
-    }), "(sample:test): Str \"aaa\"");
+    }), "(sample:test): Str \"YWFh\"");
     assert_eq!(serialize_entry(Entry {
         identifier: Identifier::new("sample".to_string(), "test".to_string()),
         value: Value::Int(4),
@@ -59,7 +59,7 @@ fn test_serialize_table() {
     let mut table = Table::new(Identifier::new("sample".to_string(), "planets".to_string()));
     table.add("sample".to_string(), "earth".to_string(), Value::Str("blue and green".to_string()));
     assert_eq!(serialize_table(table), ">>> TABLE (sample:planets)\n\
-        \t(sample:earth): Str \"blue and green\"");
+        \t(sample:earth): Str \"Ymx1ZSBhbmQgZ3JlZW4=\"");
 }
 
 #[test]
@@ -72,29 +72,29 @@ fn test_serialize_table_with_multiple_entries() {
 
     // I'm so so sorry
     assert!([">>> TABLE (sample:planets)\n\
-        \t(sample:earth): Str \"blue and green\"\n\
-        \t(sample:mars): Str \"red\"\n\
-        \t(sample:jupiter): Str \"big\"".to_string(),
+        \t(sample:earth): Str \"Ymx1ZSBhbmQgZ3JlZW4=\"\n\
+        \t(sample:mars): Str \"cmVk\"\n\
+        \t(sample:jupiter): Str \"Ymln\"".to_string(),
         ">>> TABLE (sample:planets)\n\
-        \t(sample:earth): Str \"blue and green\"\n\
-        \t(sample:jupiter): Str \"big\"\n\
-        \t(sample:mars): Str \"red\"".to_string(),
+        \t(sample:earth): Str \"Ymx1ZSBhbmQgZ3JlZW4=\"\n\
+        \t(sample:jupiter): Str \"Ymln\"\n\
+        \t(sample:mars): Str \"cmVk\"".to_string(),
         ">>> TABLE (sample:planets)\n\
-        \t(sample:mars): Str \"red\"\n\
-        \t(sample:earth): Str \"blue and green\"\n\
-        \t(sample:jupiter): Str \"big\"".to_string(),
+        \t(sample:mars): Str \"cmVk\"\n\
+        \t(sample:earth): Str \"Ymx1ZSBhbmQgZ3JlZW4=\"\n\
+        \t(sample:jupiter): Str \"Ymln\"".to_string(),
         ">>> TABLE (sample:planets)\n\
-        \t(sample:jupiter): Str \"big\"\n\
-        \t(sample:mars): Str \"red\"\n\
-        \t(sample:earth): Str \"blue and green\"".to_string(),
+        \t(sample:jupiter): Str \"Ymln\"\n\
+        \t(sample:mars): Str \"cmVk\"\n\
+        \t(sample:earth): Str \"Ymx1ZSBhbmQgZ3JlZW4=\"".to_string(),
         ">>> TABLE (sample:planets)\n\
-        \t(sample:mars): Str \"red\"\n\
-        \t(sample:jupiter): Str \"big\"\n\
-        \t(sample:earth): Str \"blue and green\"".to_string(),
+        \t(sample:mars): Str \"cmVk\"\n\
+        \t(sample:jupiter): Str \"Ymln\"\n\
+        \t(sample:earth): Str \"Ymx1ZSBhbmQgZ3JlZW4=\"".to_string(),
         ">>> TABLE (sample:planets)\n\
-        \t(sample:jupiter): Str \"big\"\n\
-        \t(sample:earth): Str \"blue and green\"\n\
-        \t(sample:mars): Str \"red\"".to_string()].contains(&serialize_table(table)));
+        \t(sample:jupiter): Str \"Ymln\"\n\
+        \t(sample:earth): Str \"Ymx1ZSBhbmQgZ3JlZW4=\"\n\
+        \t(sample:mars): Str \"cmVk\"".to_string()].contains(&serialize_table(table)));
 }
 
 #[test]
