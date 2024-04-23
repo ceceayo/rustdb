@@ -1,12 +1,12 @@
 use ceayo_db::{Entry, Value, Identifier, Table};
-use ceayo_db::serialize::{serialize_entry, serialize_table};
+use ceayo_db::serialize::{serialize_entry, serialize_table, serialize_string};
 
 #[test]
 fn test_serialize_entry_with_string() {
     assert_eq!(serialize_entry(Entry {
         identifier: Identifier::new("sample".to_string(), "test".to_string()),
         value: Value::Str("aaa".to_string()),
-    }), "(sample:test): \"aaa\"");
+    }), "(sample:test): Str \"aaa\"");
 }
 
 #[test]
@@ -14,7 +14,7 @@ fn test_serialize_entry_with_all_types() {
     assert_eq!(serialize_entry(Entry {
         identifier: Identifier::new("sample".to_string(), "test".to_string()),
         value: Value::Str("aaa".to_string()),
-    }), "(sample:test): \"aaa\"");
+    }), "(sample:test): Str \"aaa\"");
     assert_eq!(serialize_entry(Entry {
         identifier: Identifier::new("sample".to_string(), "test".to_string()),
         value: Value::Int(4),
@@ -29,8 +29,8 @@ fn test_serialize_entry_with_all_types() {
     }), "(sample:test): Bool true");
     assert_eq!(serialize_entry(Entry {
         identifier: Identifier::new("sample".to_string(), "test".to_string()),
-        value: Value::Ref(Identifier::new("sample".to_string(), "test".to_string())),
-    }), "(sample:test): (sample:test)");
+        value: Value::Id(Identifier::new("sample".to_string(), "test".to_string())),
+    }), "(sample:test): Id (sample:test)");
 }
 
 #[test]
@@ -59,7 +59,7 @@ fn test_serialize_table() {
     let mut table = Table::new(Identifier::new("sample".to_string(), "planets".to_string()));
     table.add("sample".to_string(), "earth".to_string(), Value::Str("blue and green".to_string()));
     assert_eq!(serialize_table(table), ">>> TABLE (sample:planets)\n\
-        \t(sample:earth): \"blue and green\"");
+        \t(sample:earth): Str \"blue and green\"");
 }
 
 #[test]
@@ -72,27 +72,35 @@ fn test_serialize_table_with_multiple_entries() {
 
     // I'm so so sorry
     assert!([">>> TABLE (sample:planets)\n\
-        \t(sample:earth): \"blue and green\"\n\
-        \t(sample:mars): \"red\"\n\
-        \t(sample:jupiter): \"big\"".to_string(),
+        \t(sample:earth): Str \"blue and green\"\n\
+        \t(sample:mars): Str \"red\"\n\
+        \t(sample:jupiter): Str \"big\"".to_string(),
         ">>> TABLE (sample:planets)\n\
-        \t(sample:earth): \"blue and green\"\n\
-        \t(sample:jupiter): \"big\"\n\
-        \t(sample:mars): \"red\"".to_string(),
+        \t(sample:earth): Str \"blue and green\"\n\
+        \t(sample:jupiter): Str \"big\"\n\
+        \t(sample:mars): Str \"red\"".to_string(),
         ">>> TABLE (sample:planets)\n\
-        \t(sample:mars): \"red\"\n\
-        \t(sample:earth): \"blue and green\"\n\
-        \t(sample:jupiter): \"big\"".to_string(),
+        \t(sample:mars): Str \"red\"\n\
+        \t(sample:earth): Str \"blue and green\"\n\
+        \t(sample:jupiter): Str \"big\"".to_string(),
         ">>> TABLE (sample:planets)\n\
-        \t(sample:jupiter): \"big\"\n\
-        \t(sample:mars): \"red\"\n\
-        \t(sample:earth): \"blue and green\"".to_string(),
+        \t(sample:jupiter): Str \"big\"\n\
+        \t(sample:mars): Str \"red\"\n\
+        \t(sample:earth): Str \"blue and green\"".to_string(),
         ">>> TABLE (sample:planets)\n\
-        \t(sample:mars): \"red\"\n\
-        \t(sample:jupiter): \"big\"\n\
-        \t(sample:earth): \"blue and green\"".to_string(),
+        \t(sample:mars): Str \"red\"\n\
+        \t(sample:jupiter): Str \"big\"\n\
+        \t(sample:earth): Str \"blue and green\"".to_string(),
         ">>> TABLE (sample:planets)\n\
-        \t(sample:jupiter): \"big\"\n\
-        \t(sample:earth): \"blue and green\"\n\
-        \t(sample:mars): \"red\"".to_string()].contains(&serialize_table(table)));
+        \t(sample:jupiter): Str \"big\"\n\
+        \t(sample:earth): Str \"blue and green\"\n\
+        \t(sample:mars): Str \"red\"".to_string()].contains(&serialize_table(table)));
+}
+
+#[test]
+fn test_serialize_string() {
+    assert_eq!(serialize_string("hello".to_string()), "aGVsbG8=");
+    assert_eq!(serialize_string("test".to_string()), "dGVzdA==");
+    assert_eq!(serialize_string("abc123!!,.?=+".to_string()), "YWJjMTIzISEsLj89Kw==");
+    assert_eq!(serialize_string("💕 copying is an act of love 💕".to_string()), "8J+SlSBjb3B5aW5nIGlzIGFuIGFjdCBvZiBsb3ZlIPCfkpU=");
 }

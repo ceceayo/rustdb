@@ -8,7 +8,9 @@ pub enum Value {
     Int(i64),
     Float(f64),
     Bool(bool),
-    Ref(Identifier),
+    Id(Identifier),
+    LinkOut(Identifier, Identifier),
+    Table(Identifier),
 }
 
 #[derive(Eq, Hash, PartialEq, Clone)]
@@ -39,17 +41,9 @@ impl Entry {
             value,
         }
     }
-    pub fn explain(&self) -> String {
-        match &self.value {
-            Value::Str(s) => format!("({}:{}): \"{}\"", self.identifier.provider, self.identifier.name, s),
-            Value::Int(i) => format!("({}:{}): Int {}", self.identifier.provider, self.identifier.name, i),
-            Value::Float(f) => format!("({}:{}): Float {}", self.identifier.provider, self.identifier.name, f),
-            Value::Bool(b) => format!("({}:{}): {}", self.identifier.provider, self.identifier.name, b),
-            Value::Ref(r) => format!("({}:{}): ({}:{})", self.identifier.provider, self.identifier.name, r.provider, r.name),
-        }
-    }
 }
 
+#[derive(Clone)]
 pub struct Table {
     pub identifier: Identifier,
     pub entries: HashMap<Identifier, Entry>,

@@ -57,7 +57,12 @@ fn create_entries() {
     db.get_table(Identifier::new("sample".to_string(), "planets".to_string())).unwrap()
         .add("sample".to_string(), "uranus".to_string(), Value::Bool(true));
     db.get_table(Identifier::new("sample".to_string(), "planets".to_string())).unwrap()
-        .add("sample".to_string(), "pluto".to_string(), Value::Ref(Identifier::new("sample".to_string(), "earth".to_string())));
+        .add("sample".to_string(), "pluto".to_string(), Value::Id(Identifier::new("sample".to_string(), "earth".to_string())));
+    db.get_table(Identifier::new("sample".to_string(), "planets".to_string())).unwrap()
+        .add("testapp_2".to_string(), "pluto".to_string(), Value::LinkOut(Identifier::new("sample".to_string(), "planets".to_string()), Identifier::new("sample".to_string(), "earth".to_string())));
+    db.get_table(Identifier::new("sample".to_string(), "planets".to_string())).unwrap()
+        .add("testapp_2".to_string(), "mars".to_string(), Value::Table(Identifier::new("sample".to_string(), "planets".to_string())));
     
-    assert_eq!(db.get_table(Identifier::new("sample".to_string(), "planets".to_string())).unwrap().entries.len(), 5);
+    
+    assert_eq!(db.get_table(Identifier::new("sample".to_string(), "planets".to_string())).unwrap().entries.len(), 7);
 }
