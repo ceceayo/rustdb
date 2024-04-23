@@ -1,6 +1,6 @@
 [package]
 name = "ceayo_db"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["ceayo"]
 description = "A small minecraft-like database. No persistance, rebuilding every time for allowing your program to be modded."
